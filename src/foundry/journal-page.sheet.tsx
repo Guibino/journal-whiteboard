@@ -9,6 +9,8 @@ export abstract class JournalPageSheetReact extends JournalPageSheet {
     isEditable: boolean;
     rendered: boolean;
 
+    _onCloseListeners: any[] = []
+
     static get defaultOptions() {
         return foundry.utils.mergeObject(super.defaultOptions, {
             submitOnClose: false,
@@ -31,12 +33,25 @@ export abstract class JournalPageSheetReact extends JournalPageSheet {
         this.form.setAttribute('autocomplete', 'off');
     }
 
-    createReactRoot(sheet: any) {
+    private addCloseListener = (listener) => {
+        this._onCloseListeners.push(listener)
+    }
+
+    private removeCloseListener = (listener) => {
+        const index = this._onCloseListeners.findIndex((item) => item === listener)
+        if(index < 0) {
+            return
+        }
+        console.log("removing", index)
+        this._onCloseListeners.splice(index, 1)
+    }
+
+    createReactRoot(data: any) {
         if (!this.root) {
             this.root = ReactDOM.createRoot(this.form);
         }
         this.root.render(
-            <DocumentSheetProvider sheet={sheet} form={$(this.form)}>{this.reactComponent()}</DocumentSheetProvider>,
+            <DocumentSheetProvider data={data} form={$(this.form)} sheet={this} addCloseListener={this.addCloseListener} removeCloseListener={this.removeCloseListener}>{this.reactComponent()}</DocumentSheetProvider>,
         );
     }
 
@@ -63,6 +78,10 @@ export abstract class JournalPageSheetReact extends JournalPageSheet {
     async close() {
         this.root?.unmount();
         this.root = null;
+        for (const listener of this._onCloseListeners) {
+            listener()
+        }
+        this._onCloseListeners = []
         return await super.close();
     }
 

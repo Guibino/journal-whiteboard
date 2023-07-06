@@ -148,9 +148,6 @@ export class JournalWhiteboardPageSheet extends JournalPageSheetReact {
             await this.saveSnapshot();
         }
         this?.removeStoreListener();
-        if (collaborativeStore) {
-            collaborativeStore.disconnectUser(this.instanceId, this.userId)
-        }
         return await super.close();
     }
 }

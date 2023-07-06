@@ -31,7 +31,7 @@ export interface DocumentSheetOptions {
     includeTOC: boolean
 }
 
-type DocumentSheet = {
+type DocumentData = {
     cssClass: string
     editable: boolean
     document: any
@@ -47,13 +47,14 @@ type DocumentSheet = {
 }
 
 export type DocumentSheetState = {
-    sheet: DocumentSheet
+    data: DocumentData
     update: (data?: any, context?: any) => Promise<any>
-    useDropEffect: (data: any, deps: any[]) => void
+    useDropEffect: (callback: any, deps: any[]) => void
+    useCloseEffect: (callback: any, deps: any[]) => void
 }
 
 const defaultDocumentSheetState = {
-    sheet: {
+    data: {
         cssClass: '',
         editable: false,
         document: null,
@@ -97,6 +98,9 @@ const defaultDocumentSheetState = {
     },
     useDropEffect() {
         throw new Error("Not Implemented")
+    },
+    useCloseEffect() {
+        throw new Error("Not Implemented")
     }
 }
 
@@ -106,12 +110,12 @@ export const useDocumentSheet = () => useContext(DocumentSheetContext)
 
 const DEBOUNCE_TIME = 1000
 
-export const DocumentSheetProvider = ({sheet, form, children}): ReactElement => {
+export const DocumentSheetProvider = ({data, form, sheet, addCloseListener, children}): ReactElement => {
     const update = useCallback(debounce(async (data?: any, context?: any) => {
-        return await sheet.document.update(data, context)
-    }, DEBOUNCE_TIME), [sheet?.document])
+        return await data.document.update(data, context)
+    }, DEBOUNCE_TIME), [data?.document])
     const useDropEffect = (callback, deps) => useEffect(() => {
-        if (!sheet.editable) {
+        if (!data.editable) {
             return
         }
         $(form).on("drop", ({originalEvent}) => {
@@ -126,8 +130,12 @@ export const DocumentSheetProvider = ({sheet, form, children}): ReactElement => 
         return () => {
             $(form).off("drop")
         }
-    }, [form, sheet.editable, ...deps])
-    return <DocumentSheetContext.Provider value={{sheet, update, useDropEffect}}>
+    }, [form, data.editable, ...deps])
+
+    const useCloseEffect = (callback, deps) => useEffect(() => {
+        addCloseListener(callback)
+    }, [sheet, ...deps])
+    return <DocumentSheetContext.Provider value={{data, update, useDropEffect, useCloseEffect}}>
         {children}
     </DocumentSheetContext.Provider>
 };

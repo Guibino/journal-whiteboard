@@ -20,6 +20,7 @@ import { WhiteboardMenu } from './whiteboard-menu';
 import { useWhiteboard } from '../contexts/whiteboard.context';
 import { debugService } from '../../debug/debug.module';
 import { getShapeByDataTransferType } from '../../custom-components/custom-components.service';
+import { collaborativeStore } from '../../collaboration/collaboration.module';
 
 type WhiteBoardPageProps = {
     store: TLStore;
@@ -39,8 +40,8 @@ export const WhiteboardPage = ({
     userId,
     instanceId,
 }: WhiteBoardPageProps) => {
-    const { sheet, update, useDropEffect } = useDocumentSheet();
-    const [showTitle, setShowTitle] = React.useState(sheet?.data?.title?.show);
+    const { data, update, useDropEffect, useCloseEffect } = useDocumentSheet();
+    const [showTitle, setShowTitle] = React.useState(data?.data?.title?.show);
     const {app, setApp} = useWhiteboard()
     const handleMount = useCallback((app: App) => {
         setApp(app)
@@ -71,16 +72,22 @@ export const WhiteboardPage = ({
         app.setSelectedIds([shapeId]);
         app.setSelectedTool('select.idle');
     }, [app])
+
+    useCloseEffect(() => {
+        if (collaborativeStore.isCollaborativeMode()) {
+            collaborativeStore.disconnectUser(instanceId, userId)
+        }
+    }, [collaborativeStore, instanceId, userId])
     return (
-        <Whiteboard className={sheet.cssClass}>
-            {sheet?.editable && (
+        <Whiteboard className={data.cssClass}>
+            {data?.editable && (
                 <>
                     <header className="journal-header">
                         <input
                             className="title"
                             type="text"
-                            defaultValue={sheet?.data?.name}
-                            key={sheet.id}
+                            defaultValue={data?.data?.name}
+                            key={data.id}
                             onChange={e => {
                                 update({ name: e.target.value });
                             }}
@@ -94,14 +101,14 @@ export const WhiteboardPage = ({
                                 <select
                                     name="title.level"
                                     onChange={({ currentTarget }) => {
-                                        sheet.document.update(
+                                        data.document.update(
                                             { title: { level: currentTarget.value } },
                                             { render: false },
                                         );
                                     }}
-                                    value={sheet.data.title.level}
+                                    value={data.data.title.level}
                                 >
-                                    {Object.entries(sheet.headingLevels).map(([key, value]) => (
+                                    {Object.entries(data.headingLevels).map(([key, value]) => (
                                         <option key={key} value={key}>
                                             {value as String}
                                         </option>
@@ -116,7 +123,7 @@ export const WhiteboardPage = ({
                                         name="title.show"
                                         checked={showTitle}
                                         onChange={({ currentTarget }) => {
-                                            sheet.document.update(
+                                            data.document.update(
                                                 { title: { show: currentTarget.checked } },
                                                 { render: false },
                                             );
@@ -130,9 +137,9 @@ export const WhiteboardPage = ({
                     <WhiteboardMenu />
                 </>
             )}
-            {showTitle && !sheet?.editable && (
+            {showTitle && !data?.editable && (
                 <header className="journal-page-header">
-                    <h1>{sheet?.data?.name}</h1>
+                    <h1>{data?.data?.name}</h1>
                 </header>
             )}
             <TldrawEditor
