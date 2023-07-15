@@ -147,7 +147,9 @@ export class JournalWhiteboardPageSheet extends JournalPageSheetReact {
         if (this.isEditable) {
             await this.saveSnapshot();
         }
-        this?.removeStoreListener();
+        if (this?.removeStoreListener) {
+            this?.removeStoreListener();
+        }
         return await super.close();
     }
 }
