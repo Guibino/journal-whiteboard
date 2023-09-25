@@ -37,26 +37,18 @@ export abstract class JournalPageSheetReact extends JournalPageSheet {
         this._onCloseListeners.push(listener)
     }
 
-    private removeCloseListener = (listener) => {
-        const index = this._onCloseListeners.findIndex((item) => item === listener)
-        if(index < 0) {
-            return
-        }
-        console.log("removing", index)
-        this._onCloseListeners.splice(index, 1)
-    }
-
     createReactRoot(data: any) {
         if (!this.root) {
             this.root = ReactDOM.createRoot(this.form);
         }
         this.root.render(
-            <DocumentSheetProvider data={data} form={$(this.form)} sheet={this} addCloseListener={this.addCloseListener} removeCloseListener={this.removeCloseListener}>{this.reactComponent()}</DocumentSheetProvider>,
+            <DocumentSheetProvider data={data} form={$(this.form)} sheet={this} addCloseListener={this.addCloseListener}>{this.reactComponent()}</DocumentSheetProvider>,
         );
     }
 
-    async _render(force = false, options = {}) {
-        if (!force && this._state === Application.RENDER_STATES.RENDERED) {
+    async _render(force = false, options: { action?: string} = {}) {
+        console.log(force, options)
+        if (!force && this._state === Application.RENDER_STATES.RENDERED && options?.action !== 'update') {
             this.refreshWindowTitle();
             return;
         }

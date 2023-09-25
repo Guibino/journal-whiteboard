@@ -21,6 +21,7 @@ import { useWhiteboard } from '../contexts/whiteboard.context';
 import { debugService } from '../../debug/debug.module';
 import { getShapeByDataTransferType } from '../../custom-components/custom-components.service';
 import { collaborativeStore } from '../../collaboration/collaboration.module';
+import { debounce } from '@tldraw/utils';
 
 type WhiteBoardPageProps = {
     store: TLStore;
@@ -33,6 +34,8 @@ type WhiteBoardPageProps = {
 const editorAssetUrls = getEditorAssetUrls();
 const uiAssetUrls = getUiAssetUrls();
 
+const DEBOUNCE_TIME = 1000
+
 export const WhiteboardPage = ({
     store,
     config,
@@ -40,7 +43,13 @@ export const WhiteboardPage = ({
     userId,
     instanceId,
 }: WhiteBoardPageProps) => {
-    const { data, update, useDropEffect, useCloseEffect } = useDocumentSheet();
+    const { data, sheet, useDropEffect, useCloseEffect } = useDocumentSheet();
+    const updateDocumentName = useCallback(debounce(async (data?: any, context?: any) => {
+        if (!data) {
+            return
+        }
+        return await sheet.document.update(data, context)
+    }, DEBOUNCE_TIME), [sheet?.document])
     const [showTitle, setShowTitle] = React.useState(data?.data?.title?.show);
     const {app, setApp} = useWhiteboard()
     const handleMount = useCallback((app: App) => {
@@ -89,7 +98,7 @@ export const WhiteboardPage = ({
                             defaultValue={data?.data?.name}
                             key={data.id}
                             onChange={e => {
-                                update({ name: e.target.value });
+                                updateDocumentName({ name: e.target.value });
                             }}
                             placeholder="Page Name"
                         />

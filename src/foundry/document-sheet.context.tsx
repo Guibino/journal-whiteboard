@@ -48,7 +48,7 @@ type DocumentData = {
 
 export type DocumentSheetState = {
     data: DocumentData
-    update: (data?: any, context?: any) => Promise<any>
+    sheet: any
     useDropEffect: (callback: any, deps: any[]) => void
     useCloseEffect: (callback: any, deps: any[]) => void
 }
@@ -93,9 +93,7 @@ const defaultDocumentSheetState = {
         headingLevels: {},
         id: ''
     },
-    update: async () => {
-        throw new Error("Not Implemented")
-    },
+    sheet: {},
     useDropEffect() {
         throw new Error("Not Implemented")
     },
@@ -108,12 +106,8 @@ const DocumentSheetContext = createContext<DocumentSheetState>(defaultDocumentSh
 
 export const useDocumentSheet = () => useContext(DocumentSheetContext)
 
-const DEBOUNCE_TIME = 1000
 
 export const DocumentSheetProvider = ({data, form, sheet, addCloseListener, children}): ReactElement => {
-    const update = useCallback(debounce(async (data?: any, context?: any) => {
-        return await data.document.update(data, context)
-    }, DEBOUNCE_TIME), [data?.document])
     const useDropEffect = (callback, deps) => useEffect(() => {
         if (!data.editable) {
             return
@@ -135,7 +129,7 @@ export const DocumentSheetProvider = ({data, form, sheet, addCloseListener, chil
     const useCloseEffect = (callback, deps) => useEffect(() => {
         addCloseListener(callback)
     }, [sheet, ...deps])
-    return <DocumentSheetContext.Provider value={{data, update, useDropEffect, useCloseEffect}}>
+    return <DocumentSheetContext.Provider value={{data, sheet, useDropEffect, useCloseEffect}}>
         {children}
     </DocumentSheetContext.Provider>
 };
