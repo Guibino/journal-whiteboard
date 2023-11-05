@@ -1,6 +1,5 @@
-import { debounce } from '@tldraw/utils';
-import React, { ReactElement, createContext, useCallback, useContext, useEffect, useReducer } from 'react';
-import { debugService } from '../debug/debug.module';
+import React, { ReactElement, createContext, useContext, useEffect } from 'react';
+import { MODULE_NAME } from '../constants';
 
 export interface DocumentSheetOptions {
     baseApplication: any
@@ -118,7 +117,7 @@ export const DocumentSheetProvider = ({data, form, sheet, addCloseListener, chil
                 data = JSON.parse(originalEvent?.dataTransfer?.getData('text/plain') ?? '');
                 callback(data)
             } catch(e) {
-                debugService.error("Not allowed: ", originalEvent?.dataTransfer?.getData('text/plain') ?? originalEvent)
+                console.error(`${MODULE_NAME} | Not allowed: `, originalEvent?.dataTransfer?.getData('text/plain') ?? originalEvent)
             }
         })
         return () => {

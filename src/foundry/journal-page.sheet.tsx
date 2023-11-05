@@ -47,7 +47,6 @@ export abstract class JournalPageSheetReact extends JournalPageSheet {
     }
 
     async _render(force = false, options: { action?: string} = {}) {
-        console.log(force, options)
         if (!force && this._state === Application.RENDER_STATES.RENDERED && options?.action !== 'update') {
             this.refreshWindowTitle();
             return;

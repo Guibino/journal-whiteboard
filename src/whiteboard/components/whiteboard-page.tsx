@@ -18,7 +18,6 @@ import styled from 'styled-components';
 import { useDocumentSheet } from '../../foundry/document-sheet.context';
 import { WhiteboardMenu } from './whiteboard-menu';
 import { useWhiteboard } from '../contexts/whiteboard.context';
-import { debugService } from '../../debug/debug.module';
 import { getShapeByDataTransferType } from '../../custom-components/custom-components.service';
 import { collaborativeStore } from '../../collaboration/collaboration.module';
 import { debounce } from '@tldraw/utils';
@@ -61,7 +60,6 @@ export const WhiteboardPage = ({
             return
         }
         const shape = getShapeByDataTransferType(data?.type);
-        debugService.log('Dropping Foundry Document', data, shape);
         if (!shape) {
             return;
         }

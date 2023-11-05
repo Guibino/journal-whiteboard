@@ -1,6 +1,5 @@
 import { TLInstanceId, TLRecord, TLStore, TLUser, TLUserId, TLUserPresence } from '@tldraw/tldraw';
 import { RecordsDiff, SerializedSchema, StoreListener, StoreSnapshot, compareSchemas } from '@tldraw/tlstore';
-import { debugService } from '../debug/debug.module';
 
 type Diff = {
     instanceId: TLInstanceId;
@@ -47,12 +46,10 @@ export class CollaborativeStore {
     }
 
     connectUser(instanceId: TLInstanceId) {
-        debugService.log("connectUser", instanceId)
         this.socket.executeForOthers('connectUser', instanceId);
     }
 
     disconnectUser(instanceId: TLInstanceId, userId: TLUserId) {
-        debugService.log("disconnectUser", instanceId)
         this.socket.executeForOthers('disconnectUser', instanceId, userId);
     }
 
@@ -63,7 +60,6 @@ export class CollaborativeStore {
         } catch (e) {
             return
         }
-        debugService.log("disconnecting user", instanceId, userId)
         store.mergeRemoteChanges(() => {
             store.remove([userId])
         })
@@ -77,13 +73,11 @@ export class CollaborativeStore {
             return
         }
         const userState = store.serialize(record => ['user', 'user_presence'].includes(record.typeName))
-        debugService.log("sendinng user state", userState)
         this.socket.executeForOthers('updateUsers', instanceId, userState);
     }
 
     handleUpdateUsers(instanceId: TLInstanceId, userState: UserState) {
         const store = this.getStore(instanceId)
-        debugService.log("userState", userState)
         store.mergeRemoteChanges(() => {
             store.put(Object.values(userState))
         });
@@ -109,27 +103,22 @@ export class CollaborativeStore {
     }
 
     async restoreFromRemote(instanceId: TLInstanceId) {
-        debugService.log('Restoring remote snapshot.', instanceId);
         const snapshot = await this.socket.executeAsGM(
             'getRemoteSnapshot',
             instanceId,
         );
         if (!snapshot) {
-            debugService.log('No remote snapshot found.', snapshot);
             return;
         }
-        debugService.log('Remote snapshot found.', snapshot);
         const store = this.getStore(instanceId);
         const migrationResult = store.schema.migrateStoreSnapshot(snapshot.store, snapshot.schema);
 
         if (migrationResult.type === 'error') {
-            debugService.error(`Failed to migrate snapshot: ${migrationResult.reason}`);
             return;
         }
         store.mergeRemoteChanges(() => {
             store.put(Object.values(migrationResult.value));
         });
-        debugService.log('Remote snapshot restored.');
     }
 
     handleGetRemoteSnapshot(instanceId: TLInstanceId): Snapshot {
@@ -147,7 +136,6 @@ export class CollaborativeStore {
             store: documentState,
             schema: store.schema.serialize(),
         };
-        debugService.log("Sending snapshot to remote", snapshot)
         return snapshot;
     }
 

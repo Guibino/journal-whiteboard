@@ -13,7 +13,6 @@ import {
     TLUserPresence,
     TldrawEditorConfig,
 } from '@tldraw/tldraw';
-import { debugService } from '../debug/debug.module';
 import { tldrawSettings } from '../tldraw/tldraw.module';
 import { JournalPageSheetReact } from '../foundry/journal-page.sheet';
 import {
@@ -98,9 +97,7 @@ export class JournalWhiteboardPageSheet extends JournalPageSheetReact {
             return
         }
 
-        debugService.log('Collaborative editing is enabled.');
         await collaborativeStore.restoreFromRemote(this.instanceId)
-        debugService.log('Listening for remote changes.');
         collaborativeStore.connectUser(this.instanceId)
         this.removeStoreListener = app.store.listen(entry => {
             collaborativeStore.put(this.instanceId, entry.changes, entry.source)
@@ -127,9 +124,7 @@ export class JournalWhiteboardPageSheet extends JournalPageSheetReact {
         }
 
         const frequency = game.settings.get('core', 'editorAutosaveSecs')
-        debugService.log("Autosave is enabled")
         this.autoSaveInterval = setInterval(async () => {
-            debugService.log("Autosaving...")
             await this.saveSnapshot()
         }, frequency * 1000)
     }
@@ -140,7 +135,6 @@ export class JournalWhiteboardPageSheet extends JournalPageSheetReact {
             { ['system.whiteboard']: snapshot },
             { diff: false, recursive: true },
         );
-        debugService.log("Saved")
     }
 
     async close() {

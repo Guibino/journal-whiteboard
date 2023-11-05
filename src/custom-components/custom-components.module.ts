@@ -1,4 +1,3 @@
-import { debugService } from "../debug/debug.module";
 import { registerComponent } from "./custom-components.service";
 import { ActorShape, ActorTool } from "./foundry/actor";
 import { ItemShape } from "./foundry/item";
@@ -13,7 +12,6 @@ import { SceneShape, SceneTool } from "./foundry/scene";
 export default {
     hooks: {
         init() {
-            debugService.log('registering custom components');
             registerComponent({
                 shape: ActorShape,
                 tool: ActorTool,

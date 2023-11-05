@@ -6,11 +6,9 @@ import { JournalWhiteboardPageSheet } from './whiteboard.sheet';
 export default {
     hooks: {
         async init() {
-            debugService.log('registering whiteboard data model');
             Object.assign(CONFIG.JournalEntryPage.dataModels, {
                 [`${CANNONICAL_NAME}.whiteboard`]: WhiteboardModel,
             });
-            debugService.log('registering journal whiteboard type');
             DocumentSheetConfig.registerSheet(
                 JournalEntryPage,
                 CANNONICAL_NAME,
