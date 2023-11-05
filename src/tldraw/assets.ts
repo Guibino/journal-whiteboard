@@ -1,9 +1,9 @@
 import { EditorAssetUrls } from "@tldraw/tldraw";
 import { UiAssetUrls } from "@tldraw/ui";
-import { CANNONICAL_NAME } from "../constants";
+import { CANONICAL_NAME } from "../constants";
 
 export const formatAssetUrl = (assetUrl) => {
-    return `modules/${CANNONICAL_NAME}/${assetUrl}`;
+    return `modules/${CANONICAL_NAME}/${assetUrl}`;
 }
 
 

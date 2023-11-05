@@ -1,4 +1,4 @@
-import { CANNONICAL_NAME } from "../constants";
+import { CANONICAL_NAME } from "../constants";
 import { CollaborativeStore } from "./collaborative-store";
 
 export let collaborativeStore: CollaborativeStore;
@@ -11,7 +11,7 @@ export default {
             }
         },
         socketlib() {
-            const socket = socketlib.registerModule(CANNONICAL_NAME);
+            const socket = socketlib.registerModule(CANONICAL_NAME);
             if (!collaborativeStore) {
                 collaborativeStore = new CollaborativeStore();
             }

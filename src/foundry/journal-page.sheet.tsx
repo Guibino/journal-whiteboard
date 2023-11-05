@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { DocumentSheetProvider } from './document-sheet.context';
+import { MODULE_NAME } from '../constants';
 
 export abstract class JournalPageSheetReact extends JournalPageSheet {
     root: ReactDOM.Root | null = null;
@@ -51,6 +52,7 @@ export abstract class JournalPageSheetReact extends JournalPageSheet {
             this.refreshWindowTitle();
             return;
         }
+        console.log(`${MODULE_NAME} | render`, {force: force, action: options?.action, state: this._state, rendered: this._state === Application.RENDER_STATES.RENDERED})
 
         await super._render(force, options);
     }

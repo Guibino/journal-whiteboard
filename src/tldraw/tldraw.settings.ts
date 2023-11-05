@@ -1,4 +1,4 @@
-import { CANNONICAL_NAME } from '../constants';
+import { CANONICAL_NAME } from '../constants';
 import { createi18nLazyObject } from '../foundry/i18n';
 
 export enum Theme {
@@ -13,7 +13,7 @@ export const ThemeLabel = createi18nLazyObject({
 
 export class TldrawSettings {
     registerSettings() {
-        game.settings.register(CANNONICAL_NAME, 'theme', {
+        game.settings.register(CANONICAL_NAME, 'theme', {
             name: game.i18n.localize('JW.Theme'),
             hint: game.i18n.localize('JW.ThemeHint'),
             scope: 'world',
@@ -25,6 +25,6 @@ export class TldrawSettings {
     }
 
     get theme() {
-        return game.settings.get(CANNONICAL_NAME, 'theme');
+        return game.settings.get(CANONICAL_NAME, 'theme');
     }
 }

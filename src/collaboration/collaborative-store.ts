@@ -1,5 +1,6 @@
 import { TLInstanceId, TLRecord, TLStore, TLUser, TLUserId, TLUserPresence } from '@tldraw/tldraw';
 import { RecordsDiff, SerializedSchema, StoreListener, StoreSnapshot, compareSchemas } from '@tldraw/tlstore';
+import { MODULE_NAME } from '../constants';
 
 type Diff = {
     instanceId: TLInstanceId;
@@ -92,10 +93,10 @@ export class CollaborativeStore {
         }
         const comparison = compareSchemas(store.schema.serialize(), diff.schema);
         if (comparison === -1) {
-            debugService.error("Schema mismatch. Can't apply changes.");
+            console.error(`${MODULE_NAME} | Schema mismatch. Can't apply changes.`);
             return;
         } else if (comparison === 1) {
-            debugService.warn('Schema mismatch. Applying changes anyway.');
+            console.warn(`${MODULE_NAME} | Schema mismatch. Applying changes anyway.`);
         }
         store.mergeRemoteChanges(() => {
             store.applyDiff(diff.changes);
@@ -164,7 +165,7 @@ export class CollaborativeStore {
         const migrationResult = store.schema.migrateStoreSnapshot(snapshot.store, snapshot.schema);
 
         if (migrationResult.type === 'error') {
-            debugService.error(`Failed to migrate snapshot: ${migrationResult.reason}`);
+            console.error(`${MODULE_NAME} | Failed to migrate snapshot: ${migrationResult.reason}`);
             return;
         }
         store.deserialize(migrationResult.value);
