@@ -1,6 +1,6 @@
 {
   "id": "journal-whiteboard",
-  "version": "11.3.3",
+  "version": "11.3.4",
   "compatibility": {
     "minimum": "11",
     "verified": "11",
@@ -40,6 +40,6 @@
     ]
   },
   "url": "https://github.com/patrickporto/journal-whiteboard",
-  "manifest": "https://github.com/patrickporto/journal-whiteboard/releases/download/11.3.3/module.json",
-  "download": "https://github.com/patrickporto/journal-whiteboard/releases/download/11.3.3/journal-whiteboard.zip"
+  "manifest": "https://github.com/patrickporto/journal-whiteboard/releases/download/11.3.4/module.json",
+  "download": "https://github.com/patrickporto/journal-whiteboard/releases/download/11.3.4/journal-whiteboard.zip"
 }
