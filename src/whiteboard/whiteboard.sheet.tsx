@@ -93,7 +93,7 @@ export class JournalWhiteboardPageSheet extends JournalPageSheetReact {
     };
 
     async enableCollaborativeEditing(app: App) {
-        if (!collaborativeStore.isCollaborativeMode() || !this.isEditable) {
+        if (!collaborativeStore.isCollaborativeMode() || !this.isEditable || this?.removeStoreListener) {
             return
         }
 
@@ -119,7 +119,7 @@ export class JournalWhiteboardPageSheet extends JournalPageSheetReact {
     }
 
     async enableAutoSave() {
-        if (!this.rendered || !this.isEditable) {
+        if (!this.rendered || !this.isEditable || this?.autoSaveInterval) {
             return
         }
 
