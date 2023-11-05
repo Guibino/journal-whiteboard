@@ -47,14 +47,13 @@ export abstract class JournalPageSheetReact extends JournalPageSheet {
         );
     }
 
-    async _render(force = false, options: { action?: string} = {}) {
-        if (!force && this._state === Application.RENDER_STATES.RENDERED && options?.action !== 'update') {
+    async _render(force = false, options: { action?: string, data?: { system?: object }} = {}) {
+        if (!force && this._state === Application.RENDER_STATES.RENDERED && !options?.data?.system) {
             this.refreshWindowTitle();
             return;
         }
-        console.log(`${MODULE_NAME} | render`, {force: force, action: options?.action, state: this._state, rendered: this._state === Application.RENDER_STATES.RENDERED})
-
-        await super._render(force, options);
+        console.log(`${MODULE_NAME} | render`, {appId: this.appId, force: force, action: options.action, state: this._state, rendered: this._state === Application.RENDER_STATES.RENDERED})
+        return super._render(force, options);
     }
 
     private refreshWindowTitle() {
