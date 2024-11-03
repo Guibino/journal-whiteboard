@@ -2,9 +2,9 @@
   "id": "journal-whiteboard",
   "version": "11.3.4",
   "compatibility": {
-    "minimum": "11",
+    "minimum": "12",
     "verified": "11",
-    "maximum": "11"
+    "maximum": "12"
   },
   "title": "Journal Whiteboard",
   "description": "A Whiteboard module for Foundry VTT",
