@@ -1,5 +1,6 @@
 {
     "name": "journal-whiteboard",
+    "id": "journal-whiteboard",
     "version": "12",
     "private": true,
     "type": "module",
